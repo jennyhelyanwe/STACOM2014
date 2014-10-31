@@ -1,0 +1,383 @@
+\documentclass{llncs}
+\usepackage{llncsdoc}
+\usepackage{graphicx}
+\usepackage{float}
+\restylefloat{figure or table}
+%
+\begin{document}
+
+\title{Identifying Myocardial Mechanical Properties From MRI Using an Orthotropic Constitutive Model}
+\author{Zhinuo J. Wang\inst{1}\and Vicky Y. Wang\inst{1}\and Sue-Mun Huang\inst{1}\and Justyna A. Niestrawska\inst{3}\and Alistair A. Young\inst{1,3} \and Martyn P. Nash\inst{1,4}}
+\institute{Auckland Bioengineering Institute, University of Auckland, New Zealand \email{zwan145@aucklanduni.ac.nz},
+\email{vicky.wang@auckland.ac.nz},
+\email{shua078@aucklanduni.ac.nz},
+\email{a.young@auckland.ac.nz},
+\email{martyn.nash@auckland.ac.nz}
+\and Institute of Biomechanics, Graz University of Technology, Graz, Austria \email{niestrawska@tugraz.at}
+\and Department of Anatomy with Radiology, University of Auckland, New Zealand
+\and Department of Engineering Science, University of Auckland, New Zealand
+}
+\maketitle
+
+\begin{abstract}
+This paper presents a method to characterise the passive orthotropic and contractile properties of left ventricular (LV) myocardial tissue using MRI data of cardiac anatomy, structure and function. Personalised anatomical LV models were fitted to image data from four canine hearts.  Diffusion tensor MRI data from the same hearts were parameterised using finite element fitting to provide fibre angle fields that represent longitudinal axes of the myocytes. Fitted fibre orientations fields were combined with laminar-sheet orientation data extracted from the Auckland dog heart model and embedded into the customised LV anatomical models. A modified Holzapfel-Ogden orthotropic constitutive relation was parameterised using published data from {\itshape ex vivo} shear tests on myocardial tissue blocks. This parameterised constitutive model was scaled for each case in the present study by fitting the individualised LV models to end-diastolic image data. Contractile tension was then estimated by comparing LV model predictions to the end-systolic image data. Personalised models of this kind can be used to predict the 3D deformation, strain and stress throughout the LV wall during the entire cardiac cycle.
+\end{abstract}
+
+\begin{keywords} myocardial mechanical properties, orthotropic constitutive model, parameter estimation, canine heart, passive stiffness, active contraction, cardiac cycle. 
+	
+\end{keywords}
+
+\section{Introduction}
+The physiological function of the heart is determined by the mechanical properties of the myocardial tissue. Abnormalities in the mechanical function of the heart affects its ability to pump blood through the circulatory system, which can lead to fatal consequences. Estimating the mechanical properties of the {\itshape in vivo} heart through the use of image-extracted geometries and biophysical modelling provides important information about the stresses and strains that occur during the cardiac cycle. This biomechanical analysis depends on the choice of constitutive model to describe the mechanical properties of myocardial tissue. Many studies have used transversely isotropic constitutive models, for which the fibre and cross-fibre directions can reproduce distinctly different mechanical responses. However, experimental studies have reported that myocardial tissue is not only characterised by the myocardial fibre axis, but also by a distinct laminar sheet organisation, where the tethering between fibres within a sheet is stronger than that between adjacent sheets \cite{LeGrice}. This motivates the use of orthotropic constitutive models to describe the three distinct axes of microstructural symmetry inherent within the myocardium. 
+
+This paper presents a modified version of the Holzapfel-Ogden orthotropic constitutive model \cite{Holz} for modelling the passive mechanical response of canine LV. The data used in this paper have been provided as part of the STACOM 2014 LV Mechanics Challenge which involves comparing the model predicted LV displacements with that measured using tagged magnetic resonance imaging (MRI) techniques. The displacement predictions have been presented in a separate challenge paper. The methods presented in this paper have the capability of predicting regional distribution of strain and stress of the LV at both the end-diastolic (ED) and end-systolic (ES) stages of the cardiac cycle. These predictions would aid better understanding of the deformation and the regional distribution of work in the LV myocardial tissue throughout the cardiac cycle. 
+
+\section{Methods}
+\subsection{LV mechanics modelling}
+\subsubsection{Anatomical model customisation.} 
+A regular truncated prolate spheroid shaped 16 (4 x 4 x 1) element tricubic Hermite Finite Element (FE) model was fitted to the diastasis canine LV image-derived surface data. For each animal, the generic model was first registered to the cardiac coordinate system of the experimental surface data, and then the endocardial and epicardial surfaces were fitted to the data using previously published methods \cite{Wang}. 
+
+In order to describe the orthotropic mechanical behaviour of the model it was necessary to embed fibre and sheet orientations into the LV model. Microstructural orientation was described using Euler angles with respect to the short-axis (fibre angle) and epicardial tangent (sheet angle) planes. The fibre angle was calculated as the helix angle of projection of the supplied diffusion tensor imaging (DTI) vector data onto the wall tangent plane of the customised LV geometry. Imbrication angles were quantified and were considered sufficiently small to be negligible. 
+
+Subject-specific laminar sheet orientation data were not available for the canine hearts in this study, therefore sheet angle data from the Auckland dog heart (ADH) model \cite{LeGrice} were incorporated into each of the models. Firstly, each canine LV model was transformed to match the geometry defined by the ADH model. Then fibre and sheet angle data extracted directly from the ADH model were fitted using tricubic Hermite interpolation into each transformed canine model. Since both sets of angles were defined with respect to the local FE coordinates, the microstructural orientation fields could be directly mapped from the ADH to the new canine models. In conjunction with the DTI fitted fibre angles for the canine model, the embedded sheet angles were adjusted to best match the sheet planes described by the ADH model. Fig. 1 shows an example of a new canine LV model based on combining the DTI-derived fibre data with the ADH laminar structure. 
+
+\begin{figure}[H]
+	\centering
+	\caption[]{Transmural variation in fibre and sheet orientation for the LV model fitted to the 0912 study. Fibre orientations are shown by rods colour coded by the value of the fibre angle (range from blue: $-90\deg$ to red: $90\deg$), and sheet orientations indicated by the ribbons.}
+	\includegraphics[height=40mm]{DTI_Fibre_DTI_Sheet_Final}
+\end{figure}
+
+\subsubsection{Myocardial mechanical properties.}
+
+The passive mechanical behaviour of the myocardium was modelled using
+a modified version of the Holzapfel-Ogden orthotropic constitutive
+model \cite{Holz}.  The isotropic (first) term in the original formulation
+ did not allow the mechanical response in each of the
+material directions to be independently controlled. To decouple the axial terms, the isotropic term was omitted from the original formulation and an additional
+exponential term describing the sheet-normal direction response was
+added \cite{Justyna}. The modified formulation is given by
+ 
+\begin{equation}
+W=\sum\limits_{i=\mathrm{f,s,n}} \frac{a_{i}}{2b_{i}} \left(\mathrm{e}^{b_{i}(I_{\mathrm{4}i}-1)^2}-1\right)+ \frac{a_{\mathrm{fs}}}{2b_{\mathrm{fs}}} \left(\mathrm{e}^{b_{\mathrm{fs}}I^{2}_{8\mathrm{fs}}} -1\right)\newline
+\end{equation}
+
+\begin{equation}
+\mbox{where }I_{4\mathrm{f}}= \mathbf{f} _{0}\cdot(\mathbf{Cf}_{0}), I_{4\mathrm{s}}=\mathbf{s}_{0}\cdot(\mathbf{Cs}_{0}), I_{4\mathrm{n}}=\mathbf{n}_{0}\cdot(\mathbf{Cn}_{0}), I_{8\mathrm{fs}}=\mathbf{f}_{0}\cdot(\mathbf{Cs}_{0})
+\end{equation}
+
+\begin{equation}
+\mbox{and }\mathbf{f}_{0}=[1\,0\,0]^T, \mathbf{s}_{0}=[0\,1\,0]^T, \mathbf{n}_{0}=[0\,0\,1]^T
+\end{equation}
+
+where $\mathbf{C}$ is the right Cauchy-Green deformation tensor referred to the fibre (f), sheet (s) and sheet-normal (n) microstructural material axes, and $a_{\mathrm{f}}$, $a_{\mathrm{s}}$, $a_{\mathrm{n}}$, $a_{\mathrm{fs}}$, $b_{\mathrm{f}}$, $b_{\mathrm{s}}$, $b_{\mathrm{n}}$, $b_{\mathrm{fs}}$ are the constitutive parameters. As keeping with the original Holzapfel-Odgen model, the f, s and n exponential terms are only included in the energy function when their associated $I_{4\mathrm{f}}$, $I_{4\mathrm{s}}$ and $I_{4\mathrm{n}}$ invariants are larger than 1.
+
+The contractile mechanical behaviour of the myocardium was modelled using the steady-state Hunter-McCulloch-ter Keurs active tension constitutive model \cite{Hunter}, which is given by
+
+\begin{equation}
+T_{\mathrm{a}}=T_{\mathrm{Ca}}\times[1+\beta(\sqrt{I_{4\mathrm{f}}}-1)]
+\end{equation}
+
+where $T_{\mathrm{a}}$ is the active tension produced within the tissue, $T_{\mathrm{Ca}}$ is the bulk activation parameter associated with calcium release from the sarcoplasmic reticulum, $\beta$ is the myocardial length-dependence parameter and $\sqrt{I_{4\mathrm{f}}}$ gives the fibre extension ratio. 
+
+\subsubsection{LV mechanics simulations} were performed for the diastolic slow filling phase (from diastasis to end-diastole) by applying the given LV cavity pressures on the endocardial walls of the LV models, whilst the LV base was constrained to match supplied displacement data. Diastasis was assumed to be the stress-free reference geometry. Systolic contraction was simulated by increasing the active tension and pressure loading in simultaneous increments until end systole was reached.  
+
+\subsection{Constitutive parameter estimation}
+
+The eight parameters of the passive constitutive model have previously been fitted to simple shear experimental data \cite{Dokos} through a multivariate optimisation process for all six modes of shear. Details of this method can be found in \cite{Justyna}. The fitted values are listed in the Table 1.
+
+\begin{table}[H]
+	\caption{Orthotropic material parameters obtained by fitting to simple shear data \cite{Dokos}. }
+	\begin{center}
+		\renewcommand{\arraystretch}{1.2}
+		\setlength\tabcolsep{8pt}
+		\begin{tabular}{cccccccc}
+		\hline\noalign{\smallskip}
+		$a_{\mathrm{f}}$ (kPa) & $a_{\mathrm{s}}$ (kPa) & $a_{\mathrm{n}}$ (kPa) & $a_{\mathrm{fs}}$ (kPa) & $b_{\mathrm{f}}$ & $b_{\mathrm{s}}$ & $b_{\mathrm{n}}$ & $b_{\mathrm{fs}}$\\
+		\noalign{\smallskip}
+		\hline
+		\noalign{\smallskip}
+		24.84&6.94&6.35&0.37&11.32&7.07&0.22&11.67\\
+		\hline
+		\end{tabular}
+	\end{center}
+\end{table}
+
+\subsection{Parameter Estimation using DTI fibre description}
+
+- Construct objective function using mean square error of surface projection. 
+\subsubsection{Passive parameter estimation}
+- Objective function - match geometry at end diastole
+-Insufficient data to estimate all 8 parameters of the orthotropic constitutive equation - use previously fitted Dokos parameters as a reasonable estimation of b and a parameters, and scale outter stiffness {af, as, an, afs} parameters collectively. 
+
+- Parameter space for each study - 1024 had very flat space, comparison to amount of geometric change. 
+- Present estimated parameters and fitting error - estimate a value for 1024 using an average of the other 3.  
+
+\begin{table}[H]
+	\caption{Passive parameter estimation results using DTI fibre description}
+	\begin{center}
+		\renewcommand{\arraystretch}{1.2}
+		\setlength\tabcolsep{8pt}
+		\begin{tabular}{ccccccc}
+		\hline\noalign{\smallskip}
+		Study & M & $a_{\mathrm{f}}$ (kPa) & $a_{\mathrm{s}}$ (kPa) & $a_{\mathrm{n}}$ (kPa) & $a_{\mathrm{fs}}$ (kPa) & Mean square error ($mm^{2}$)\\
+		\noalign{\smallskip}
+		\hline
+		\noalign{\smallskip}
+		0912 & 1.12 & 27.90 & 7.80 & 7.14 & 0.42 & 1.30 \\
+		\noaling{\smallskip}
+		0917 & 5.43 & 134.79 & 37.67 & 34.50 & 2.03 & 0.93 \\ 
+		\noaling{\smallskip}
+		1017 & 3.17 & 78.63 & 21.98 & 20.13 & 1.19 & 1.48 \\ 
+		\noaling{\smallskip}
+		1024 &  & & & & & \\ 
+		\hline
+		\end{tabular}
+	\end{center}
+\end{table}
+
+  
+\subsubsection{Active parameter estimation}
+- objective function - match geometry at end systole. Use mixed formulation to penalise LV lengthening.
+- Use estimated passive parameters from previous methods. 
+- Estimate TCa parameter - use previously fitted beta parameter reference Hunter. 
+- Present estimated parameters and fitting error. 
+
+\begin{table}[H]
+	\caption{Active parameter estimation results using DTI fibre description}
+	\begin{center}
+		\renewcommand{\arraystretch}{1.2}
+		\setlength\tabcolsep{8pt}
+		\begin{tabular}{ccc}
+		\hline\noalign{\smallskip}
+		Study & $T_{\mathrm{Ca}}$ (kPa) & Mean square error ($mm^{2}$)\\
+		\noalign{\smallskip}
+		\hline
+		\noalign{\smallskip}
+		0912 & 56.18 &  \\
+		\noaling{\smallskip}
+		0917 & 51.38 &  \\ 
+		\noaling{\smallskip}
+		1017 & 31.71 &  \\ 
+		\noaling{\smallskip}
+		1024 &  & \\ 
+		\hline
+		\end{tabular}
+	\end{center}
+\end{table}
+
+- Model unable to shorten to a realistic degree. 
+- Wall stress and strains were evaluated. 
+- Model unable to shorten a realistic amount to match end systolic geometry - based on Wang's thesis, use ADH fibre description instead.  
+
+\subsection {Parameter Estimation using ADH fibre description}
+- Identical methods for passive and active parameter estimation. 
+\subsubsection{Passive parameter estimation}
+\begin{table}[H]
+	\caption{Passive parameter estimation results using ADH fibre description}
+	\begin{center}
+		\renewcommand{\arraystretch}{1.2}
+		\setlength\tabcolsep{8pt}
+		\begin{tabular}{ccccccc}
+		\hline\noalign{\smallskip}
+		Study & M & $a_{\mathrm{f}}$ (kPa) & $a_{\mathrm{s}}$ (kPa) & $a_{\mathrm{n}}$ (kPa) & $a_{\mathrm{fs}}$ (kPa) & Mean square error ($mm^{2}$)\\
+		\noalign{\smallskip}
+		\hline
+		\noalign{\smallskip}
+		0912 & 1.03 & 25.56 & 7.15 & 6.54 & 0.39 & 1.43 \\
+		\noaling{\smallskip}
+		0917 & 3.44 & 85.11 & 23.79 & 21.79 & 1.28 & 0.85 \\ 
+		\noaling{\smallskip}
+		1017 & 1.11 & 27.3 & 7.64 & 7.00 & 0.41 & 1.34 \\ 
+		\noaling{\smallskip}
+		1024 &  & & & & & \\ 
+		\hline
+		\end{tabular}
+	\end{center}
+\end{table}
+- general decrease in passive parameter estimation when ADH fibre is used. 
+- what to do about 1024
+
+\subsubsection{Active parameter estimation}
+- ADH fibre alleviated the lengthening effect of LV at ES dramatically
+
+\begin{table}[H]
+	\caption{Active parameter estimation results using DTI fibre description}
+	\begin{center}
+		\renewcommand{\arraystretch}{1.2}
+		\setlength\tabcolsep{8pt}
+		\begin{tabular}{ccc}
+		\hline\noalign{\smallskip}
+		Study & $T_{\mathrm{Ca}}$ (kPa) & Mean square error ($mm^{2}$)\\
+		\noalign{\smallskip}
+		\hline
+		\noalign{\smallskip}
+		0912 & 87.12 & 2.16 \\
+		\noaling{\smallskip}
+		0917 & 81.62 & 6.31 \\ 
+		\noaling{\smallskip}
+		1017 & 39.53 & 1.71\\ 
+		\noaling{\smallskip}
+		1024 &  & \\ 
+		\hline
+		\end{tabular}
+	\end{center}
+\end{table}
+
+- Insert figure comparison of ES models between DTI and ADH optimised. 
+
+\subsubsection{Simultaneous passive and active estimation}
+- Construct combined objective function:
+	- insert equation here
+
+- Using optimised values of M and TCa as initial guesses, optimise both M and TCa simultaneously
+
+- Allowing the fibre passive stiffness to vary independently of the bulk value. 
+
+
+
+\begin{equation}
+W=M\left(\sum\limits_{i=\mathrm{f,s,n}} \frac{a_{i}}{2b_{i}} \left(\mathrm{e}^{b_{i}(I_{\mathrm{4}i}-1)^2}-1\right)+ \frac{a_{\mathrm{fs}}}{2b_{\mathrm{fs}}} \left(\mathrm{e}^{b_{\mathrm{fs}}I^{2}_{8\mathrm{fs}}} -1\right)\right)
+\end{equation}
+
+This decision was based on the data available for the construction of the objective function. LV surface data were only provided at a single time point (ED). Pressure-volume data were available at multiple time points, however this provided only scalar geometric data rather than the detailed kinematic information required for estimating the orthotropic constitutive parameters. Therefore it was decided that only a single passive parameter could be justifiably estimated. The objective function was formulated as the sum of the mean square error (MSE) projections of the MRI-derived surface data points onto the associated surfaces of the ED geometry predicted by the LV model.  The optimally fitted passive constitutive relation was used to model the passive myocardial mechanical behaviour during the entire cardiac cycle.  Using a similar rationale, just the maximum $T_{\mathrm{Ca}}$ parameter ($T_{\mathrm{Camax}}$) of the contractile model (Eq. 4) was estimated. The $\beta$ parameter was set to 1.45 as previously reported in \cite{Hunter}.
+
+\subsection{Computational modelling tools}
+The geometry, fibre and sheet orientation were fitted using a combination of MATLAB and the computational back-end of the Continuum Mechanics, Image analysis, Signal processing and System Identification (CMISS) tool (http://www. cmiss.org/). The CellML open-standard (http://www.cellml.org/) was used to describe the modified Holzapfel-Ogden constitutive model in the mechanical analysis, and was plugged into the CMISS computational back-end. All three-dimensional model visualisations were rendered using CMGUI, the graphical interface of CMISS.  
+
+\section{Results}
+
+\subsection{Passive myocardial properties}
+A representative set of results is shown for the 0912 study in Table 2. Listed are the optimal $M$ parameter values, the resulting scaled coefficients of the modified Holzapfel-Ogden orthotropic constitutive model and the MSE between the model predictions and ED image data. 
+
+\begin{table}[H]
+	\caption{Estimated scaling parameter $M$ and the resultant passive stiffness parameters. The $b$ values for all four studies are as listed in Table 1. (Values given to 3 significant figures)}
+	\begin{center}
+		\renewcommand{\arraystretch}{1.0}
+		\setlength\tabcolsep{4pt}
+		\begin{tabular}{c|c|cccc|c}
+		\hline\noalign{\smallskip}
+		Study No. & $M$ &$a_{\mathrm{f}}$ (kPa) & $a_{\mathrm{s}}$ (kPa) & $a_{\mathrm{n}}$ (kPa) & $a_{\mathrm{fs}}$ (kPa)& MSE ($\mathrm{mm}^{2}$)\\
+		\noalign{\smallskip}
+		\hline
+		\noalign{\smallskip}
+		0912& 0.958 &23.8&6.65&6.08&0.354&1.07\\
+		0917& 1.044 &25.9&7.24&6.63&0.391&1.54\\
+		%1017& 1.294 &32.1&8.97&8.22&0.485&0.879\\
+		%1024& 17.7 &440&123&113&6.64&0.149\\
+		\noalign{\smallskip}
+		\hline
+		\end{tabular}
+	\end{center}
+\end{table}
+
+\subsection{Myocardial contractile properties}
+The systolic image data were used to estimate the $T_{\mathrm{Camax}}$ parameter. A representative set of the results for the 0912 study is shown in Table 3. Listed are the estimated $T_{\mathrm{Camax}}$ parameters and associated MSEs between the model predictions and ES image data. 
+
+\begin{table}
+	\caption{Estimated maximum active contractile parameters $T_{\mathrm{Camax}}$.}
+	\renewcommand{\arraystretch}{1.2}
+	\setlength{\tabcolsep}{20pt}
+	\begin{center}
+		\begin{tabular}{ccc}
+		\hline
+		\noalign{\smallskip}
+		Study No. & $T_{\mathrm{Camax}}$ (kPa) & MSE ($\mathrm{mm}^{2}$)\\
+		\noalign{\smallskip}
+		\hline
+		\noalign{\smallskip}
+		0912 & 99.9 & 7.84 \\  %% this MSE seems more like it - but double check.
+		0917 & 95.2&11.1\\
+		%1017 &Results to follow&\\
+		%1024 &&\\
+		\noalign{\smallskip}
+		\hline
+		\end{tabular}
+	\end{center}
+\end{table} 
+
+\subsection{Regional strain and stress distribution}
+The individualised FE models were used to predict the strain and stress distributions throughout the ventricular wall during the cardiac cycle. The model predicted fibre extension ratio is a useful measurement for understanding the LV tissue deformations during the cardiac cycle. An example of this is illustrated in Fig. 2 for the study 0917 for both the ED and ES states.
+
+\begin{figure}[H]
+	\centering
+	\caption[]{Regional myocardial fibre extension ratios as predicted at ED (left) and ES (right). Anterior view of the LV endocardium (silver surfaces) and epicardium (lines) are illustrated}
+	\includegraphics[height=60mm]{ExtensionRatio.png}
+\end{figure}
+ 
+ A model predicted stress distribution is also useful for understanding the amount of work performed by different regions of the LV wall myocardium during the cardiac cycle. This is illustrated for the same study in Fig. 3, again for both the ED and ES states. The model predicted regional distributions of extension ratio and stress provide insights into the mechanical behaviour of the myocardium that are not derivable from cardiac imaging techniques. 
+  
+\begin{figure}[H]
+	\centering
+	\caption[]{Myocardial fibre stress distribution simulated throughout LV myocardium at ED (left) and ES (right). Colour scales have units of kilopascals. Anterior view of the LV endocardium (silver surfaces) and epicardium (lines) are illustrated}
+	\includegraphics[height=60mm]{Stress.png}
+\end{figure}
+%\subsection{Multivariate passive and active parameter estimation} 
+
+%\begin{table}
+%	\caption{Optimal values of $M$ and $T_{\mathrm{Ca}}$ following simultaneous fitting to ED and ES.}
+%	\begin{center}
+%		\renewcommand{\arraystretch}{1.0}
+%		\setlength\tabcolsep{20pt}
+%		\begin{tabular}{cccc}
+%		\hline\noalign{\smallskip}
+%		Study No. & $M$ (kPa) & $T_{\mathrm{Ca}}$ (kPa) & MSE ($\mathrm{mm}^{2}$)\\
+%		\noalign{\smallskip}
+%		\hline
+%		\noalign{\smallskip}
+%		0912 &&&\\
+%		0917 &&&\\
+%		1017 &&&\\
+%		1024 &&&\\
+%		\noalign{\smallskip}
+%		\hline
+%		\end{tabular}
+%	\end{center}
+%\end{table}
+
+
+\section{Discussion and Conclusions}
+MRI of cardiac structure and function provide detailed quantitative data with which personalised anatomical models can be built and myocardial constitutive equations can be parameterised. Individualised models of this kind can be used to predict the regional strain and stress that the LV wall experiences during the cardiac cycle. 
+
+An elongating effect was observed of the LV model predictions during systolic contraction for all four studies (see Fig. 2 or 3, right panel), and the elongation was insensitive to changes in $T_{\mathrm{Camax}}$ parameter values. The same elongation effect was not observed in the geometries provided (which shortened instead during systole) and so a large MSE was produced at ES. Future work would investigate the causes of this model limitation. 
+
+Also in future work, simultaneous passive and active parameter estimation will be investigated by concurrently fitting $M$ and $T_{\mathrm{Ca}}$ to both the ED and ES surface data. This method has been inspired by the observation that diastolic inflation provides only a limited snapshot of the myocardial passive mechanical response, whereas the much larger deformations during the systolic phase would likely provide additional information to help tie down the passive constitutive model. The objective function will be constructed by combining the MSEs of surface data projections to the LV surfaces at ED and ES. 
+
+\begin{thebibliography}{1}
+	
+	\bibitem{Dokos}
+	Dokos, S., Smaill, B.H., Young, A.A., LeGrice, I.J.
+	Shear properties of passive ventricular myocardium.
+	American Journal of Physiology 283, H2650--H2659 (2002).
+	
+	\bibitem{Justyna}
+	Niestrawska J.
+	A structure-based analysis of cardiac remodelling - a constitutive modelling approach.
+	Masters Thesis, RWTH Aachen University of Technology, Germany (2013).
+	
+	\bibitem{Holz}
+	Holzapfel, G.A, Ogden, R.W.
+	Constitutive modelling of passive myocardium: a structurally based framework for material characterisation. 
+	Philosophical Transactions of the Royal Society A 367 1902, 3445--3475 (2009).
+	
+	\bibitem{Hunter}
+	Hunter, P.J, McCulloch, A.D., Ter Keurs, H.E.D.J.
+	Modelling the mechanical properties of cardiac muscle.
+	Progress in Biophysics and Molecular Biology 69(2-3), 289--331 (1998).
+
+	\bibitem{LeGrice}
+	LeGrice, I.J., Hunter, P.J., Smaill, B.H.
+	Laminar structure of the heart: a mathematical model.
+	American Journal of Physiology 272, H2466--H2476 (1997).
+	
+	\bibitem{Nielsen}
+	Nielsen, P.M.F., LeGrice, I.J., Smaill, B.H., Hunter, P.J.
+	Mathematical model of geometry and fibrous structure of the heart.
+	American Journal of Physiology 260(4), H1365--H1378 (1991).
+	
+	\bibitem{Wang}
+	Wang, V.Y., Lam, H.I, Ennis, D.B., Cowan, B.R., Young, A.A., Nash, M.P.
+	Modelling passive diastolic mechanics with quantitative MRI of cardiac structure and function. 
+	Medical Image Analysis 13(5), 773--784 (2009).
+ 
+\end{thebibliography}
+\end{document}
